@@ -106,7 +106,7 @@ clean: tidy
 dep: input.ml
 	$(OCAMLDEP) hashtbl2.mli hashtbl2.ml version.ml annot.mli annot.ml \
 		tag.ml plugin.mli plugin.ml input.mli input.ml \
-		output.mli output.ml main.ml > .depend
+		output.mli output.ml main.ml > depend
 
 .SUFFIXES:
 .SUFFIXES: .mll .mly .ml .mli .cmi .cmo .cmx
@@ -122,7 +122,7 @@ dep: input.ml
 .ml.cmx:
 	$(OCAMLOPT) -dtypes -c $<
 
--include .depend
+-include depend
 
 input.ml: input.mll
 

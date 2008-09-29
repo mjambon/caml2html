@@ -1,0 +1,14 @@
+hashtbl2.cmo: hashtbl2.cmi 
+hashtbl2.cmx: hashtbl2.cmi 
+annot.cmo: annot.cmi 
+annot.cmx: annot.cmi 
+plugin.cmo: plugin.cmi 
+plugin.cmx: plugin.cmi 
+input.cmi: annot.cmi 
+input.cmo: tag.cmo plugin.cmi annot.cmi input.cmi 
+input.cmx: tag.cmx plugin.cmx annot.cmx input.cmi 
+output.cmi: input.cmi annot.cmi 
+output.cmo: plugin.cmi input.cmi hashtbl2.cmi annot.cmi output.cmi 
+output.cmx: plugin.cmx input.cmx hashtbl2.cmx annot.cmx output.cmi 
+main.cmo: plugin.cmi output.cmi input.cmi 
+main.cmx: plugin.cmx output.cmx input.cmx 
