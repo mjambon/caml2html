@@ -1,0 +1,6 @@
+name = "caml2html"
+version = "1.3.0"
+description = "Syntax highlighting for OCaml code"
+requires = "str unix"
+archive(byte) = "caml2html.cma"
+archive(native) = "caml2html.cmxa"
