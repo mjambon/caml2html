@@ -58,8 +58,8 @@ byte: caml2html.byte
 
 test:
 	ocamlc -i -dtypes caml2html_test.ml > caml2html_test.mli
-	ocamlc -i -dtypes -pp 'camlp4o pa_extend.cmo q_MLast.cmo -loc _loc' \
-		-I +camlp4 caml2html_test2.ml > caml2html_test2.mli
+#	ocamlc -i -dtypes -pp 'camlp5o pa_extend.cmo q_MLast.cmo -loc _loc' \
+#		-I +camlp5 caml2html_test2.ml > caml2html_test2.mli
 	./caml2html -o caml2html_test.html \
 		caml2html_test.mli caml2html_test.ml caml2html_test2.ml \
 		-ln -ie7 \

@@ -18,30 +18,31 @@ Table of contents:
 Requirements:
 
 Caml2html needs an OCaml compiler (>= 3.00) properly installed.
+GNU make is required for the compilation.
 
 ***********
 Compiling:
 
-  gmake      # try "gmake byte" if make does not work
+  make      # try "make byte" if make does not work
 
 Compiling the library (optional):
 
-  gmake lib  # try "gmake bytelib" if it does not work
+  make lib  # try "make bytelib" if it does not work
 
 
 ************
 Installing the executable:
 
-  gmake install
+  make install
 
-Use gmake installbyte if you compiled with gmake byte. 
+Use make installbyte if you compiled with make byte. 
 The program is installed in the BINDIR
 directory specified at the first line of the Makefile (/usr/bin by
 default), and is named caml2html (even for bytecode option).
 
 Uninstalling:
 
-  gmake uninstall
+  make uninstall
 
 
 ************
@@ -49,11 +50,11 @@ Installing the library (optional):
 
 Findlib (ocamlfind command) must be installed.
 
-  gmake libinstall
+  make libinstall
 
 Uninstalling:
 
-  gmake libuninstall
+  make libuninstall
 
 
 *********
