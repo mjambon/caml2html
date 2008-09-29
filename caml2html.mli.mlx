@@ -9,6 +9,11 @@ sig
 ## @include "annot.mli" ##
 end
 
+module Plugin :
+sig
+## @include "plugin.mli" ##
+end
+
 module Input :
 sig
 ## @include "input.mli" ##

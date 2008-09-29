@@ -9,6 +9,7 @@ type handler =
 let plugins = Hashtbl.create 20
 
 let add = Hashtbl.replace plugins
+let remove = Hashtbl.remove plugins
 let exists = Hashtbl.mem plugins
 let find = Hashtbl.find plugins
 
