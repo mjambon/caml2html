@@ -35,7 +35,6 @@ Installing the executable:
 
   make install
 
-Use make installbyte if you compiled with make byte. 
 The program is installed in the BINDIR
 directory specified at the first line of the Makefile (/usr/bin by
 default), and is named caml2html (even for bytecode option).
@@ -43,18 +42,6 @@ default), and is named caml2html (even for bytecode option).
 Uninstalling:
 
   make uninstall
-
-
-************
-Installing the library (optional):
-
-Findlib (ocamlfind command) must be installed.
-
-  make libinstall
-
-Uninstalling:
-
-  make libuninstall
 
 
 *********

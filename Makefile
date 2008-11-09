@@ -144,6 +144,7 @@ archive: pre opt test caml2html.html
 		tar cjf $(P).tar.bz2 $(P)
 	mv /tmp/$(P).tar.gz /tmp/$(P).tar.bz2 .
 	cp $(P).tar.gz $(P).tar.bz2 $$WWW/
+	cp $(P).tar.gz $(P).tar.bz2 ../releases/
 	cd $$WWW/ && ln -sf $(P).tar.gz caml2html.tar.gz && \
 		ln -sf $(P).tar.bz2 caml2html.tar.bz2
 	cp caml2html.html $$WWW/caml2html-help.html
