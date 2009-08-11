@@ -1,3 +1,5 @@
+(* $Id$ *)
+
 open Printf
 open Scanf
 open Lexing
@@ -31,7 +33,7 @@ let create_pos file line linechar char =
    As a consequence, we must use the (line,char) positions and not
    absolute character position.
 *)   
-let parse_item pos_line type_lines =
+let parse_type_data pos_line type_lines =
   sscanf pos_line "%S %i %i %i %S %i %i %i"
     (fun file1 line1 linechar1 char1 file2 line2 linechar2 char2 ->
        let pos1 = create_pos file1 line1 linechar1 char1 in
@@ -163,6 +165,61 @@ mark_outermost (mark_innermost l);;
 
 type filter = [ `All | `Innermost | `Outermost ]
 
+let is_field s =
+  try
+    for i = 0 to String.length s - 2 do
+      match s.[i] with
+	  'a'..'z' -> ()
+	| _ -> raise Exit
+    done;
+    if s = "" || s.[String.length s - 1] <> '(' then
+      raise Exit;
+    true
+  with Exit -> false
+
+let is_data s =
+  String.length s >= 2 && s.[0] = ' ' && s.[1] = ' '
+
+let string_of_line = function
+    `Loc s -> s
+  | `Type -> "type("
+  | `Close -> ")"
+  | `Data s -> s
+  | `Field s -> s
+  | `Other s -> s
+  | `Empty -> ""
+
+let string_of_line2 = function
+    `Loc s -> "L " ^ s
+  | `Type -> "T " ^ "type("
+  | `Close -> "C " ^ ")"
+  | `Data s -> "D " ^ s
+  | `Field s -> "F " ^ s
+  | `Other s -> "O " ^ s
+  | `Empty -> "E " ^ ""
+
+let classify_line s =
+  if s = "" then `Other s
+  else if s.[0] = '"' then `Loc s
+  else if s = "type(" then `Type
+  else if s = ")" then `Close
+  else if is_data s then `Data s
+  else if is_field s then `Field s
+  else `Other s
+
+let preparse_file annot_file =
+  let ic = open_in annot_file in
+  let l = ref [] in
+  try 
+    while true do
+      l := classify_line (input_line ic) :: !l
+    done;
+    assert false
+  with End_of_file ->
+    close_in ic;
+    List.rev !l
+
+
 (* impl_file is the file that we want to annotate and annot_file
    if the file that contains the annotation information.
    Usually impl_file is a .ml, but it may be a .mll or .mly file.
@@ -170,30 +227,48 @@ type filter = [ `All | `Innermost | `Outermost ]
    by ocamlc or ocamlopt when -dtypes is specified.
    Only annotations that refer to impl_file are selected. *)
 let parse ~impl_file ~annot_file =
-  let ic = open_in annot_file in
-  let l = ref [] in
-  try
-    while true do
-      let line1 = input_line ic in
-      try 
-	let line2 = input_line ic in
-	if line2 <> "type(" then
-	  failwith "unrecognized format in .annot file";
-	let rec loop () =
-	    match input_line ic with
-		")" -> []
-	      | s -> s :: loop () in
-	l := parse_item line1 (loop ()) :: !l
-      with End_of_file -> failwith "unexpected end of file"
-    done;
-    assert false
-  with
-      End_of_file ->
-	close_in ic;
-	set_layer_info (tagify ~impl_file (List.rev !l))
-    | e -> 
-	close_in_noerr ic; 
-	raise e
+  let rec field_loop accu l =
+    match l with
+	`Close :: l -> (List.rev accu, l)
+      | `Data s :: l -> field_loop (s :: accu) l
+      | [] -> failwith "unexpected end of file"
+      | l -> (List.rev accu, l)
+  in
+  let rec body_loop type_data l =
+    match l with
+	`Type :: l ->
+	  let data, rem = field_loop [] l in
+	  if rem == l then type_data, l
+	  else body_loop (Some data) rem
+      | `Field _ :: l ->
+	  let data, rem = field_loop [] l in
+	  if rem == l then type_data, l
+	  else body_loop type_data rem
+      | l -> type_data, l
+  in
+
+  let rec main_loop accu l =
+    match l with
+	`Loc loc_s :: l -> 
+	  let type_data, l = body_loop None l in
+	  let accu = 
+	    match type_data with
+		None -> accu
+	      | Some data_lines ->
+		  parse_type_data loc_s data_lines :: accu
+	  in
+	  main_loop accu l
+
+      | `Empty :: l -> main_loop accu l
+      | [] -> List.rev accu
+      | x :: _ -> failwith (sprintf "junk found in annot file %S: %S"
+			      annot_file (string_of_line x))
+  in
+
+  let l = preparse_file annot_file in
+  (*List.iter (fun x -> print_endline (string_of_line2 x)) l;*)
+  let l = main_loop [] l in
+  set_layer_info (tagify ~impl_file l)
 
 let guess_annot_file file =
   try 

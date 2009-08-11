@@ -57,7 +57,8 @@ version.ml: version.ml.mlx Makefile
 byte: caml2html.byte
 
 test:
-	ocamlc -i -dtypes caml2html_test.ml > caml2html_test.mli
+	ocamlc -c -dtypes caml2html_test.ml
+	ocamlc -i caml2html_test.ml > caml2html_test.mli
 #	ocamlc -i -dtypes -pp 'camlp5o pa_extend.cmo q_MLast.cmo -loc _loc' \
 #		-I +camlp5 caml2html_test2.ml > caml2html_test2.mli
 	./caml2html -o caml2html_test.html \
@@ -100,7 +101,7 @@ tidy:
 
 clean: tidy
 	rm -f input.ml *.mlx.ml
-	rm -f caml2html.ml caml2html.mli version.ml
+	rm -f caml2html.ml caml2html.mli version.ml caml2html_test.mli
 	rm -f caml2html.html caml2html-help
 
 dep: input.ml

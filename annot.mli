@@ -1,3 +1,5 @@
+(* $Id$ *)
+
 type layer_info = { innermost : bool;
 		    outermost : bool }
 

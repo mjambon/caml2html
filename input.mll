@@ -1,3 +1,4 @@
+(* $Id$ *)
 {
 (*
   Copyright 2002-2004 Sebastien Ailleret

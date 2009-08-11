@@ -87,6 +87,8 @@ val ocamlpre :
 (** [ocamlcode s1 s2] parses [s1] and formats the result as a HTML string
   enclosed between <pre> and </pre> unless specified otherwise. *)
 
+(* $Id$ *)
+
 val ocaml_file :
   ?filename:string ->
   ?keyword_colors:(string, string option * string option * string) Hashtbl.t ->
