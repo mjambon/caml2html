@@ -1,5 +1,8 @@
 ************** v1.3 ***************
 
+2009-08-13: release 1.3.2
+  - added support for the extended format of annot files in ocaml 3.11
+
 release 1.3.1:
   - new -ext option for defining custom comment handlers.
   - hardcoded "(*html" handler that for raw HTML.

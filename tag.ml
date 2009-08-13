@@ -1,3 +1,4 @@
+(* $Id$ *)
 (* Various operations on lists of elements (Other) mixed with
    Start and Stop tags *)
 
