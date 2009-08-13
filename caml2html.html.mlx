@@ -2,8 +2,8 @@
 #use "topfind";;
 #camlp4o;;
 #require "netstring";;
-#require "micmatch_pcre";;
-open Micmatch;;
+#require "mikmatch_pcre";;
+open Mikmatch;;
 .##
 <html>
 <head>
