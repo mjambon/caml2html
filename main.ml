@@ -1,13 +1,14 @@
 (* $Id$ *)
 (* 
    Copyright 2002-2004 Sébastien Ailleret
-   Copyright 2004-2007 Martin Jambon
+   Copyright 2004-2007, 2010 Martin Jambon
    
    This file is distributed under the terms of the GNU Public License
    http://www.gnu.org/licenses/gpl.txt
 *)
 
 open Printf
+
 open Output
 
 let line_numbers = ref default_param.line_numbers
@@ -15,23 +16,38 @@ let title = ref default_param.title
 let tab_size = ref default_param.tab_size
 let footnote = ref default_param.footnote
 let style = ref default_param.style
-let html_comments = ref default_param.html_comments
+let raw_comments = ref default_param.html_comments
 let charset = ref default_param.charset
 let annot_filter = ref default_param.annot_filter
 let no_annot = ref default_param.no_annot
 let ie7 = ref default_param.ie7
+let out_format = ref (`Html : [`Html | `Latex ])
+
+let get_html_param () = {
+  Output.line_numbers = !line_numbers; 
+  title = !title;
+  tab_size = !tab_size;
+  footnote = !footnote;
+  style = !style;
+  html_comments = !raw_comments;
+  charset = !charset;
+  annot_filter = !annot_filter;
+  no_annot = !no_annot;
+  ie7 = !ie7
+}
+
+let get_latex_param () = {
+  Output_latex.line_numbers = !line_numbers; 
+  title = !title;
+  tab_size = !tab_size;
+  latex_comments = !raw_comments;
+  defs = Output_latex.default_param.Output_latex.defs
+}
 
 let get_param () =
-  { line_numbers = !line_numbers; 
-    title = !title;
-    tab_size = !tab_size;
-    footnote = !footnote;
-    style = !style;
-    html_comments = !html_comments;
-    charset = !charset;
-    annot_filter = !annot_filter;
-    no_annot = !no_annot;
-    ie7 = !ie7 }
+  match !out_format with
+      `Html -> `Html (get_html_param ())
+    | `Latex -> `Latex (get_latex_param ())
 
 
 (* output file *)
@@ -77,8 +93,9 @@ let speclist =
 
    ("-ln", Arg.Unit (fun () -> line_numbers := true),
     ": add line number at the beginning of each line");
-   ("-hc", Arg.Unit (fun () -> html_comments := true),
-    ": comments are treated as HTML code (no newlines inside of tags)");
+   ("-hc", Arg.Unit (fun () -> raw_comments := true),
+    ": comments are treated as raw HTML or LaTeX code \
+     (no newlines inside of tags)");
    ("-t", Arg.Unit (fun () -> title := true),
     ": add a title to the html page");
    ("-nf", Arg.Unit (fun () -> footnote := false),
@@ -106,32 +123,54 @@ let speclist =
     "<NAME:CMD> : Use the given external command CMD to handle comments \
                   that start with (*NAME. \
                   NAME must be a lowercase identifier.");
+
+   ("-latex", Arg.Unit (fun () -> out_format := `Latex),
+    " output LaTeX code instead of HTML.")
  ]
 
 
 
-let handle_stdin_to_stdout param =
+let handle_stdin_to_stdout out_format =
   let buf = Buffer.create 8192 in
   let l = Input.channel stdin in
-  begin_document ~param buf [];
-  Output.ocaml_file ~param buf l;
-  end_document ~param buf;
+  (match out_format with
+       `Html param ->
+         Output.begin_document ~param buf [];
+         Output.ocaml_file ~param buf l;
+         Output.end_document ~param buf
+     | `Latex param ->
+         Output_latex.begin_document ~param buf [];
+         Output_latex.ocaml_file ~param buf l;
+         Output_latex.end_document ~param buf
+  );
   Buffer.output_buffer stdout buf
 
-let manage_files param files =
-  if !res_file = ""
-  then
-    (* handles files separately *)
-    (let manage_one file =
-       let buf = Buffer.create 8192 in
-       begin_document ~param buf [file];
-       handle_file ~param buf file;
-       end_document ~param buf;
-       save_file ~dir:!res_dir buf (file ^ ".html") in
-     List.iter manage_one files)
-  else
-    (* groups all files into one *)
-    ocaml_document ~param ~dir: !res_dir files !res_file
+let manage_files out_format files =
+  match out_format with
+      `Html param ->
+        if !res_file = "" then
+          (* handles files separately *)
+          let manage_one file =
+            let buf = Buffer.create 8192 in
+            Output.begin_document ~param buf [file];
+            Output.handle_file ~param buf file;
+            Output.end_document ~param buf;
+            Output.save_file ~dir:!res_dir buf (file ^ ".html") in
+          List.iter manage_one files
+        else
+          (* groups all files into one *)
+          Output.ocaml_document ~param ~dir: !res_dir files !res_file
+    | `Latex param ->
+        if !res_file = "" then
+          let manage_one file =
+            let buf = Buffer.create 8192 in
+            Output_latex.begin_document ~param buf [file];
+            Output_latex.handle_file ~param buf file;
+            Output_latex.end_document ~param buf;
+            Output_latex.save_file ~dir:!res_dir buf (file ^ ".tex") in
+          List.iter manage_one files
+        else
+          Output_latex.ocaml_document ~param ~dir: !res_dir files !res_file
 
 
 let () =

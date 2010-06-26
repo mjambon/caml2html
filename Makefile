@@ -20,7 +20,7 @@ ifndef OCAMLDEP
   OCAMLDEP = ocamldep
 endif
 
-MODULES = hashtbl2 version annot tag plugin input output main
+MODULES = hashtbl2 version annot tag plugin input output output_latex main
 
 OBJS = $(patsubst %, %.cmo, $(MODULES))
 OBJS-NAT = $(patsubst %, %.cmx, $(MODULES))
@@ -45,11 +45,12 @@ uninstall:
         bytelib optlib tidy clean dep archive
 
 pre: version.ml caml2html.mli caml2html.ml
-caml2html.mli: annot.mli plugin.mli input.mli output.mli version.ml \
-		caml2html.mli.mlx
+caml2html.mli: annot.mli plugin.mli input.mli \
+               output.mli output_latex.mli version.ml \
+               caml2html.mli.mlx
 	camlmix -clean caml2html.mli.mlx -o caml2html.mli
 caml2html.ml: hashtbl2.mli hashtbl2.ml tag.ml annot.ml \
-              plugin.ml input.ml output.ml caml2html.ml.mlx
+              plugin.ml input.ml output.ml output_latex.ml caml2html.ml.mlx
 	camlmix -clean caml2html.ml.mlx -o caml2html.ml
 version.ml: version.ml.mlx Makefile
 	camlmix -clean version.ml.mlx -o version.ml
@@ -70,6 +71,13 @@ test:
 	./caml2html -o caml2html_self_test.html \
 		tag.ml annot.mli annot.ml plugin.mli plugin.ml \
 		input.mli input.mll output.mli output.ml \
+		output_latex.mli output_latex.ml \
+		main.ml \
+		-ln
+	./caml2html -latex -o caml2html_self_test.tex \
+		tag.ml annot.mli annot.ml plugin.mli plugin.ml \
+		input.mli input.mll output.mli output.ml \
+		output_latex.mli output_latex.ml \
 		main.ml \
 		-ln
 
@@ -107,9 +115,9 @@ clean: tidy
 dep: input.ml
 	$(OCAMLDEP) hashtbl2.mli hashtbl2.ml version.ml annot.mli annot.ml \
 		tag.ml plugin.mli plugin.ml input.mli input.ml \
-		output.mli output.ml main.ml > depend
+		output.mli output.ml output_latex.mli output_latex.ml \
+		main.ml > depend
 
-.SUFFIXES:
 .SUFFIXES: .mll .mly .ml .mli .cmi .cmo .cmx
 
 .mll.ml:
