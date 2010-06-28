@@ -194,6 +194,7 @@ type style = [ `Inline | `Inhead of string | `Url of string ]
 type param = 
     { line_numbers : bool; 
       title : bool;
+      body_only : bool;
       tab_size : int;
       footnote : bool;
       style : style;
@@ -208,6 +209,7 @@ type param =
 let default_param =
   { line_numbers = false; 
     title = false;
+    body_only = false;
     tab_size = 8;
     footnote = true;
     style = `Inhead default_style;

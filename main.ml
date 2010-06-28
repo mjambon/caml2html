@@ -22,10 +22,13 @@ let annot_filter = ref default_param.annot_filter
 let no_annot = ref default_param.no_annot
 let ie7 = ref default_param.ie7
 let out_format = ref (`Html : [`Html | `Latex ])
+let body_only = ref false
+
 
 let get_html_param () = {
   Output.line_numbers = !line_numbers; 
   title = !title;
+  body_only = !body_only;
   tab_size = !tab_size;
   footnote = !footnote;
   style = !style;
@@ -39,6 +42,7 @@ let get_html_param () = {
 let get_latex_param () = {
   Output_latex.line_numbers = !line_numbers; 
   title = !title;
+  body_only = !body_only;
   tab_size = !tab_size;
   latex_comments = !raw_comments;
   defs = Output_latex.default_param.Output_latex.defs
@@ -54,7 +58,6 @@ let get_param () =
 let res_file = ref ""
 (* output directory *)
 let res_dir = ref ""
-
 
 let usage = 
   "
@@ -75,57 +78,105 @@ let speclist =
 		     "innermost" -> annot_filter := `Innermost
 		   | "outermost" -> annot_filter := `Outermost
 		   | _ -> assert false)),
-    ": choose whether innermost or outermost type annotations should be used (default: innermost)");
+    "
+          choose whether innermost or outermost type annotations
+          should be used (default: innermost)");
 
    ("-charset", Arg.String (fun s -> charset := s),
-    sprintf ": specify charset to use (default: %s)" default_param.charset);
+    sprintf "\
+     <charset>
+          specify charset to use (default: %s)" default_param.charset);
+
 
    ("-css", Arg.Unit (fun () -> style := `Url "style.css"),
-    ": use CSS named style.css for styling");
+    "
+          use CSS named style.css for styling");
+
    ("-cssurl", Arg.String (fun s -> style := `Url s),
-    "url : use the given URL as CSS for styling");
+    "<URL>
+          use the given URL as CSS for styling");
 
    ("-inhead", Arg.Unit (fun () -> style := `Inhead Output.default_style),
-    ": use default styling and place it \
-       in the <head> section of the document (default when applicable)");
+    "
+          use default styling and place it in the <head> section
+          of the document (default when applicable)");
+
    ("-inline", Arg.Unit (fun () -> style := `Inline),
-    ": use inline styling (default fallback if -inhead is not applicable)");
+    "
+          use inline styling (HTML only, default fallback
+          if -inhead is not applicable)");
+
+   ("-body", Arg.Set body_only,
+    "
+          output only document's body, for inclusion into an 
+          existing document (see also -make-css and -make-latex-defs)");
 
    ("-ln", Arg.Unit (fun () -> line_numbers := true),
-    ": add line number at the beginning of each line");
+    "
+          add line number at the beginning of each line");
+
    ("-hc", Arg.Unit (fun () -> raw_comments := true),
-    ": comments are treated as raw HTML or LaTeX code \
-     (no newlines inside of tags)");
+    "
+          comments are treated as raw HTML or LaTeX code
+          (no newlines inside of tags)");
+
    ("-t", Arg.Unit (fun () -> title := true),
-    ": add a title to the html page");
+    "
+          add a title to the HTML page");
+
    ("-nf", Arg.Unit (fun () -> footnote := false),
-    ": do not add footnotes to the html page");
+    "
+          do not add footnotes to the HTML page");
 
    ("-ie7", Arg.Set ie7,
-    ": drop support for type annotations on Internet Explorer 6 and older");
+    "
+          drop support for type annotations on Internet Explorer 6 and older");
+
    ("-noannot", Arg.Set no_annot,
-    ": do not insert type annotations as read from .annot files");
+    "
+          do not insert type annotations as read from .annot files 
+          (HTML output only)");
 
    ("-notab", Arg.Unit (fun () -> tab_size := -1),
-    ": do not replace tabs by spaces");
+    "
+          do not replace tabs by spaces");
+
    ("-tab", Arg.Set_int tab_size,
-    "n : replace tab by n spaces (default = 8)");
+    "<integer>
+          replace tab by n spaces (default = 8)");
+
    ("-d", Arg.String (fun s -> res_dir := s),
-    "dir : generate files in directory dir, rather than in current directory");
+    "<directory>
+          generate files in directory dir, rather than in current directory");
+
    ("-o", Arg.String (fun s -> res_file := s),
-    "file : output file");
-   ("-v", Arg.Unit (fun () -> Printf.printf "%s\n" version; exit 1),
-    ": show version number");
-   ("-make-css", Arg.String (fun s -> Output.make_css s),
-    "file : create CSS file");
+    "<filename>
+          output file");
+
+   ("-v", Arg.Unit (fun () -> Printf.printf "%s\n" version; exit 0),
+    "
+          print version number to stdout and exit");
+
+   ("-make-css", Arg.String (fun s -> Output.make_css s; exit 0),
+    "<filename>
+          create CSS file with default color definitions and exit");
 
    ("-ext", Arg.String Plugin.register_command,
-    "<NAME:CMD> : Use the given external command CMD to handle comments \
-                  that start with (*NAME. \
-                  NAME must be a lowercase identifier.");
+    "<NAME:CMD>
+          use the given external command CMD to handle comments that start
+          with (*NAME. NAME must be a lowercase identifier.");
+
 
    ("-latex", Arg.Unit (fun () -> out_format := `Latex),
-    " output LaTeX code instead of HTML.")
+    "
+          output LaTeX code instead of HTML.");
+
+   ("-make-latex-defs",
+    Arg.String (fun s -> Output_latex.make_defs_file s; exit 0),
+    "<filename>
+          create a file containing the default LaTeX color definitions
+          and matching highlighting commands, and exit.
+          \\usepackage{alltt,color} is not included.");
  ]
 
 
@@ -135,13 +186,17 @@ let handle_stdin_to_stdout out_format =
   let l = Input.channel stdin in
   (match out_format with
        `Html param ->
-         Output.begin_document ~param buf [];
+         if not param.Output.body_only then
+           Output.begin_document ~param buf [];
          Output.ocaml_file ~param buf l;
-         Output.end_document ~param buf
+         if not param.Output.body_only then
+           Output.end_document ~param buf
      | `Latex param ->
-         Output_latex.begin_document ~param buf [];
+         if not param.Output_latex.body_only then
+           Output_latex.begin_document ~param buf [];
          Output_latex.ocaml_file ~param buf l;
-         Output_latex.end_document ~param buf
+         if not param.Output_latex.body_only then
+           Output_latex.end_document ~param buf
   );
   Buffer.output_buffer stdout buf
 
@@ -152,10 +207,13 @@ let manage_files out_format files =
           (* handles files separately *)
           let manage_one file =
             let buf = Buffer.create 8192 in
-            Output.begin_document ~param buf [file];
+            if not param.Output.body_only then
+              Output.begin_document ~param buf [file];
             Output.handle_file ~param buf file;
-            Output.end_document ~param buf;
-            Output.save_file ~dir:!res_dir buf (file ^ ".html") in
+            if not param.Output.body_only then
+              Output.end_document ~param buf;
+            Output.save_file ~dir:!res_dir buf (file ^ ".html")
+          in
           List.iter manage_one files
         else
           (* groups all files into one *)
@@ -164,10 +222,13 @@ let manage_files out_format files =
         if !res_file = "" then
           let manage_one file =
             let buf = Buffer.create 8192 in
-            Output_latex.begin_document ~param buf [file];
+            if not param.Output_latex.body_only then
+              Output_latex.begin_document ~param buf [file];
             Output_latex.handle_file ~param buf file;
-            Output_latex.end_document ~param buf;
-            Output_latex.save_file ~dir:!res_dir buf (file ^ ".tex") in
+            if not param.Output_latex.body_only then
+              Output_latex.end_document ~param buf;
+            Output_latex.save_file ~dir:!res_dir buf (file ^ ".tex")
+          in
           List.iter manage_one files
         else
           Output_latex.ocaml_document ~param ~dir: !res_dir files !res_file

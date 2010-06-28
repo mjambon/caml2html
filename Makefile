@@ -62,8 +62,6 @@ test:
 	ocamlc -i caml2html_test.ml > caml2html_test.mli
 	ocamlc -c caml2html_test.mli
 	ocamlc -c -dtypes caml2html_test.ml
-#	ocamlc -i -dtypes -pp 'camlp5o pa_extend.cmo q_MLast.cmo -loc _loc' \
-#		-I +camlp5 caml2html_test2.ml > caml2html_test2.mli
 	./caml2html -o caml2html_test.html \
 		caml2html_test.mli caml2html_test.ml caml2html_test2.ml \
 		-ln -ie7 \
@@ -110,7 +108,7 @@ tidy:
 	rm -f caml2html caml2html.byte \
 		*.cm[ixoa] *.cmxa *.a *.obj *.o *~ *.annot \
 		*.ml.html caml2html_test.html caml2html_self_test.html \
-		caml2html_test.mli caml2html_self_test.tex
+		caml2html_self_test.tex
 
 # remove everything that is not a source file
 clean: tidy

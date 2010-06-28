@@ -48,6 +48,7 @@ type style = [ `Inline | `Inhead of string | `Url of string ]
 type param = {
   line_numbers : bool;
   title : bool;
+  body_only : bool;
   tab_size : int;
   footnote : bool;
   style : style;

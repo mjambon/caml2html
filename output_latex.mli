@@ -35,11 +35,12 @@ val all_colors : (string option * string) list
 
 val make_defs_file : 
   ?colors:(string option * string) list -> string -> unit
-(** create the LaTeX color definitions *)
+(** Dump color definitions and matching highlighting commands into a file. *)
 
 type param = {
   line_numbers : bool;
   title : bool;
+  body_only : bool;
   tab_size : int;
   latex_comments : bool;
   defs : string;

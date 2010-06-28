@@ -158,6 +158,7 @@ let default_style = make_defs ()
 type param = {
   line_numbers : bool; 
   title : bool;
+  body_only : bool;
   tab_size : int;
   latex_comments : bool;
   defs : string;
@@ -166,6 +167,7 @@ type param = {
 let default_param = {
   line_numbers = false; 
   title = false;
+  body_only = false;
   tab_size = 8;
   latex_comments = false;
   defs = default_style;
