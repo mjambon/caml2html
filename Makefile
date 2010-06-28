@@ -58,8 +58,10 @@ version.ml: version.ml.mlx Makefile
 byte: caml2html.byte
 
 test:
-	ocamlc -c -dtypes caml2html_test.ml
+	rm -f caml2html_test.mli
 	ocamlc -i caml2html_test.ml > caml2html_test.mli
+	ocamlc -c caml2html_test.mli
+	ocamlc -c -dtypes caml2html_test.ml
 #	ocamlc -i -dtypes -pp 'camlp5o pa_extend.cmo q_MLast.cmo -loc _loc' \
 #		-I +camlp5 caml2html_test2.ml > caml2html_test2.mli
 	./caml2html -o caml2html_test.html \
@@ -102,15 +104,19 @@ bytelib: $(OBJS) caml2html.cmi caml2html.cmo
 optlib: $(OBJS-NAT) caml2html.cmi caml2html.cmx
 	$(OCAMLOPT) -a -o caml2html.cmxa caml2html.cmx
 
-tidy:
-	rm -f caml2html caml2html.byte
-	rm -f *.cm[ixoa] *.cmxa *.a *.obj *.o *~ *.annot
-	rm -f *.ml.html caml2html_test.html caml2html_self_test.html
 
+# remove everything that we don't want to include into the archive
+tidy:
+	rm -f caml2html caml2html.byte \
+		*.cm[ixoa] *.cmxa *.a *.obj *.o *~ *.annot \
+		*.ml.html caml2html_test.html caml2html_self_test.html \
+		caml2html_test.mli caml2html_self_test.tex
+
+# remove everything that is not a source file
 clean: tidy
-	rm -f input.ml *.mlx.ml
-	rm -f caml2html.ml caml2html.mli version.ml caml2html_test.mli
-	rm -f caml2html.html caml2html-help
+	rm -f input.ml *.mlx.ml \
+		caml2html.ml caml2html.mli version.ml caml2html_test.mli \
+		caml2html.html caml2html-help
 
 dep: input.ml
 	$(OCAMLDEP) hashtbl2.mli hashtbl2.ml version.ml annot.mli annot.ml \
