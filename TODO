@@ -1,5 +1,3 @@
-- add a -bare option which produces only colorized code, not a complete HTML
-  document
 - add a -s option which reads the code from the command line
 
 - add "mkdir -p" feature instead of just "mkdir"
