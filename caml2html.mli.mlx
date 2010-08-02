@@ -23,3 +23,8 @@ module Output :
 sig
 ## @include "output.mli" ##
 end
+
+module Output_latex :
+sig
+## @include "output_latex.mli" ##
+end

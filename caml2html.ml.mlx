@@ -48,3 +48,11 @@ end =
 struct
 ## @include "output.ml" ##
 end
+
+module Output_latex :
+sig
+## @include "output_latex.mli" ##
+end =
+struct
+## @include "output_latex.ml" ##
+end
