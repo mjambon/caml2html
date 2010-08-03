@@ -20,16 +20,35 @@ open Printf
 
 type class_definition = (string list * (string * string) list)
 
-let key_color1 = Some "0,128,0"
-let key_color2 = Some "119,170,170"
-let key_color3 = Some "204,153,0"
-let key_color4 = Some "153,0,153"
-let key_color5 = Some "128,128,128"
-let key_color6 = Some "255,0,0"
+let rgb1 (r, g, b) =
+  sprintf "%.2f,%.2f,%.2f"
+    (float r /. 255.)
+    (float g /. 255.)
+    (float b /. 255.)
 
-let construct_color = (Some "0,51,204", "Cconstructor")
-let comment_color = (Some "153,0,0", "Ccomment")
-let string_color = (Some "170,68,68", "Cstring")
+let rgb255 (r, g, b) =
+  sprintf "%i,%i,%i" r g b
+
+let color1 = 0, 128, 0
+let color2 = 119, 170, 170
+let color3 = 204, 153, 0
+let color4 = 153, 0, 153
+let color5 = 128, 128, 128
+let color6 = 255, 0, 0
+let color7 = 0, 51, 204
+let color8 = 153, 0, 0
+let color9 = 170, 68, 68
+
+let key_color1 = Some (rgb1 color1)
+let key_color2 = Some (rgb1 color2)
+let key_color3 = Some (rgb1 color3)
+let key_color4 = Some (rgb1 color4)
+let key_color5 = Some (rgb1 color5)
+let key_color6 = Some (rgb1 color6)
+
+let construct_color = (Some (rgb1 color7), "Cconstructor")
+let comment_color = (Some (rgb1 color8), "Ccomment")
+let string_color = (Some (rgb1 color9), "Cstring")
 let quotation_color = (None, "Cquotation")
 let linenum_color = (None, "Clinenum")
 
@@ -136,7 +155,7 @@ let make_defs
               name
 	| Some color ->
             bprintf buf "\
-\\definecolor{%sColor}{RGB}{%s}
+\\definecolor{%sColor}{rgb}{%s}
 \\newcommand\\%s[1]{\\textcolor{%sColor}{#1}}
 "
               name color
