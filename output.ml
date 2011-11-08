@@ -375,8 +375,12 @@ let ocaml
 	       line
 	   | `Newline ->
 	       Buffer.add_char buf '\n';
-	       if rest <> [] then
-		 line_comment param buf line;
+	       (match rest with
+                    []
+                  | `Special_comment _ :: _ -> ()
+                  | _ ->
+		      line_comment param buf line
+               );
 	       line + 1
 	   | `Tab ->
 	       if param.tab_size < 0 then Buffer.add_char buf '\t'
