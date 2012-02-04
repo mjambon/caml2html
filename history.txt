@@ -1,5 +1,8 @@
 ************** v1.4 ***************
 
+2012-01-03: release 1.4.2
+  - fix: no more extra newline occurring before special comments 
+
 2010-08-02: release 1.4.1
   - added the previously missing module Output_latex to the library
 
