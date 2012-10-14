@@ -1,6 +1,6 @@
 type ('a, 'b) t = ('a, 'b list ref) Hashtbl.t
 
-let create = Hashtbl.create
+let create n = Hashtbl.create n
 let clear = Hashtbl.clear
 
 let add tbl key data =
