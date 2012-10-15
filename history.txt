@@ -1,7 +1,11 @@
 ************** v1.4 ***************
 
+For more recent changes, see the git history at:
+
+  https://github.com/mjambon/caml2html/commits/master
+
 2012-01-03: release 1.4.2
-  - fix: no more extra newline occurring before special comments 
+  - fix: no more extra newline occurring before special comments
 
 2010-08-02: release 1.4.1
   - added the previously missing module Output_latex to the library
@@ -21,7 +25,7 @@ release 1.3.1:
 
 2007-02-11: release 1.3.0:
   - type of expressions is now displayed when the mouses passes over
-    them. It uses .annot files produced by the -dtypes 
+    them. It uses .annot files produced by the -dtypes
     options of ocamlc/ocamlopt.
   - camlp4 quotations are now recognized as such
   - bugfix: fixed -d option which didn't work.
