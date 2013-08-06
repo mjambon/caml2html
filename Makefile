@@ -8,7 +8,7 @@ ifndef BINDIR
   BINDIR = $(PREFIX)/bin
 endif
 ifndef OCAMLC
-  OCAMLC = ocamlc -w A
+  OCAMLC = ocamlc
 endif
 ifndef OCAMLOPT
   OCAMLOPT = ocamlopt
