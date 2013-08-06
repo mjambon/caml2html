@@ -69,24 +69,24 @@ val ocaml :
   Buffer.t ->
   Input.token list -> unit
 (** [ocaml buf l] formats the list of tokens [l] into some HTML code
-  which should be placed in a <code> or <pre> region,
+  which should be placed in a \<code\> or \<pre\> region,
   and adds the result the given buffer [buf].
   Option [nbsp] tells if the spaces must be converted into "&nbsp;" or not
-  (required in <code> regions but not in <pre>; default is false). *)
+  (required in \<code\> regions but not in \<pre\>; default is false). *)
 
 val ocamlcode :
   ?annot:Annot.tag list ->
   ?keyword_colors:(string, string option * string option * string) Hashtbl.t ->
   ?param:param -> ?tag_open:string -> ?tag_close:string -> string -> string
 (** [ocamlcode s1 s2] parses [s1] and formats the result as a HTML string
-  enclosed between <code> and </code> unless specified otherwise. *)
+  enclosed between \<code\> and \</code\> unless specified otherwise. *)
 
 val ocamlpre :
   ?annot:Annot.tag list ->
   ?keyword_colors:(string, string option * string option * string) Hashtbl.t ->
   ?param:param -> ?tag_open:string -> ?tag_close:string -> string -> string
 (** [ocamlcode s1 s2] parses [s1] and formats the result as a HTML string
-  enclosed between <pre> and </pre> unless specified otherwise. *)
+  enclosed between \<pre\> and \</pre\> unless specified otherwise. *)
 
 val ocaml_file :
   ?filename:string ->
