@@ -143,8 +143,8 @@ input.ml: input.mll
 ################ Only for developers
 P = caml2html-$(VERSION)
 
-caml2html.html: caml2html caml2html.html.mlx
-	./caml2html -help > caml2html-help
+caml2html.html: caml2html.byte caml2html.html.mlx
+	./caml2html.byte -help > caml2html-help
 	camlmix -o caml2html.html caml2html.html.mlx
 
 archive: pre opt test caml2html.html
