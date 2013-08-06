@@ -55,7 +55,7 @@ let string_of_token x =
     | a, b -> sprintf "%s %S" a b
 
 let print_tokens l =
-  List.iter (fun s -> 
+  List.iter (fun s ->
 	       printf "%s\n" (string_of_token s))
     l
 
@@ -156,8 +156,8 @@ let simple_annots = List.map simple_annot
 
 (* Add all unclosed tags that may remain *)
 let finish_annot state =
-  state.tokens <- 
-    (List.rev_map simple_annot state.annot_tags) 
+  state.tokens <-
+    (List.rev_map simple_annot state.annot_tags)
     @ state.tokens;
   state.annot_tags <- []
 
@@ -182,14 +182,14 @@ let add_token ?(offset = 0) state x =
     newline state;
   let annot1, annot2 =
     if not state.in_group then
-      let annot1 = 
+      let annot1 =
 	get_annot state (shift offset (lexeme_start_p state.lexbuf)) in
-      let annot2 = 
+      let annot2 =
 	get_annot state (shift offset (lexeme_end_p state.lexbuf)) in
       annot1, annot2
     else [], [] in
   state.tokens <- (List.rev_append (simple_annots annot2)
-		     (x :: (List.rev_append 
+		     (x :: (List.rev_append
 			      (simple_annots annot1) state.tokens)))
 
 let return_tokens state =
@@ -204,7 +204,7 @@ let return_tokens state =
     if not b then x
     else
       match x with
-	  `Start_annot (info, typ) -> 
+	  `Start_annot (info, typ) ->
 	    `Start_annot ({ info with Annot.innermost = true }, typ)
 	| `Stop_annot info ->
 	    `Stop_annot { info with Annot.innermost = true }
@@ -222,7 +222,7 @@ let hex = ['0'-'9' 'a'-'f' 'A'-'F']
 let oct = ['0'-'7']
 let bin = ['0'-'1']
 
-let operator_char = 
+let operator_char =
   [ '!' '$' '%' '&' '*' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~']
 let infix_symbol =
   ['=' '<' '>' '@' '^' '|' '&' '+' '-' '*' '/' '$' '%'] operator_char*
@@ -236,7 +236,7 @@ let space = [ ' ' '\t' '\r' '\n' ]
 
 rule token state = parse
 | "(*" (lident as handler_name)?
-    { 
+    {
       begin_group state;
       Buffer.clear state.buf;
       state.depth <- 1;
@@ -247,7 +247,7 @@ rule token state = parse
 	     let n = Plugin.count_newlines s in
 	     (for i = 1 to n do newline state done);
 	     add_token state (`Special_comment (name, s))
-	 | None 
+	 | None
 	 | Some _ ->
 	     Buffer.add_string state.buf "(*";
 	     (match handler_name with
@@ -258,7 +258,7 @@ rule token state = parse
 	     add_token state (`Comment (Buffer.contents state.buf));
       );
       end_group state;
-      token state lexbuf 
+      token state lexbuf
     }
 | '"'
     { begin_group state;
@@ -298,7 +298,7 @@ rule token state = parse
       { add_token state (`Token (lexeme lexbuf));
 	token state lexbuf }
 
-| "'\n'" | "'\r\n'" 
+| "'\n'" | "'\r\n'"
       { List.iter (add_token state) [`String "'"; `Newline; `String "'"];
 	token state lexbuf }
 | "'\\\n'" | "'\\\r\n'"
@@ -326,8 +326,8 @@ rule token state = parse
        | ("0o"| "0O") oct (oct | '_')*	
        | ("0b"| "0B") bin (bin | '_')* )
 
-| '-'? digit (digit | '_')* ('.' (digit | '_')* )? 
-      (['e' 'E'] ['+' '-']? digit (digit | '_')* )? 
+| '-'? digit (digit | '_')* ('.' (digit | '_')* )?
+      (['e' 'E'] ['+' '-']? digit (digit | '_')* )?
 | _
     { add_token state (`Token (lexeme lexbuf));
       token state lexbuf }
@@ -338,7 +338,7 @@ and comment special state = parse
       Buffer.add_string state.buf "(*";
       comment special state lexbuf }
 | "*)"
-    { state.depth <- state.depth - 1; 
+    { state.depth <- state.depth - 1;
       if (state.depth > 0) then (
 	Buffer.add_string state.buf "*)";
 	comment special state lexbuf
@@ -420,17 +420,17 @@ and quotation state = parse
   let parse ?(annot = []) lexbuf =
     token (init_state annot lexbuf) lexbuf
 
-  let string ?(filename = "") ?(annot = []) s = 
-    let lexbuf = Lexing.from_string s in 
+  let string ?(filename = "") ?(annot = []) s =
+    let lexbuf = Lexing.from_string s in
     init_lexbuf lexbuf filename;
     token (init_state annot lexbuf) lexbuf
 
-  let channel ?(filename = "") ?(annot = []) ic = 
+  let channel ?(filename = "") ?(annot = []) ic =
     let lexbuf = Lexing.from_channel ic in
     init_lexbuf lexbuf filename;
     token (init_state annot lexbuf) lexbuf
 
-  let file ?annot s = 
+  let file ?annot s =
     let ic = open_in s in
     let l = channel ~filename:s ?annot ic in
     close_in ic;

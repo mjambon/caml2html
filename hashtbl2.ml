@@ -40,14 +40,14 @@ let replace tbl key data =
   try
     let r = Hashtbl.find tbl key in
     r := data :: (List.tl !r)
-  with 
+  with
       Not_found -> Hashtbl.add tbl key (ref [data])
 
 let replace_all tbl key l =
   try
     let r = Hashtbl.find tbl key in
     r := l
-  with 
+  with
       Not_found -> Hashtbl.add tbl key (ref l)
 
 let iter f tbl =
@@ -60,7 +60,7 @@ let fold f tbl init =
   Hashtbl.fold (fun key r accu -> f key (List.hd !r) accu) tbl init
 
 let fold_all f tbl init =
-  Hashtbl.fold 
+  Hashtbl.fold
     (fun key r accu -> f key !r accu)
     tbl init
 

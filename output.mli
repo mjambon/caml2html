@@ -1,4 +1,4 @@
-(* 
+(*
    Copyright 2004 Martin Jambon
 
    This module produces HTML code for the presentation of OCaml programs
@@ -9,7 +9,7 @@
 *)
 
 val version : string
-(** Version of caml2html. For compatibility with older versions. 
+(** Version of caml2html. For compatibility with older versions.
   Use [Version.version] instead, which returns only the version code,
   without the "caml2html " prefix. *)
 
@@ -30,15 +30,15 @@ val string_color : string option * string option * string
 val alpha_keyword_color : string option * string option * string
 val nonalpha_keyword_color : string option * string option * string
 
-val default_keyword_color_list : 
+val default_keyword_color_list :
   (string * (string option * string option * string)) list
-val default_keyword_colors : 
+val default_keyword_colors :
   (string, string option * string option * string) Hashtbl.t
 val all_colors : (string option * string option * string) list
 (** colors which are used for the predefined style.
   This is a list of couples (optional color specification, CSS class). *)
 
-val make_css : 
+val make_css :
   ?default: class_definition list ->
   ?colors:(string option * string option * string) list -> string -> unit
 (** make a CSS file from the given colors *)
@@ -66,7 +66,7 @@ val ocaml :
   ?nbsp:bool ->
   ?keyword_colors:(string, string option * string option * string) Hashtbl.t ->
   ?param:param ->
-  Buffer.t -> 
+  Buffer.t ->
   Input.token list -> unit
 (** [ocaml buf l] formats the list of tokens [l] into some HTML code
   which should be placed in a <code> or <pre> region,
@@ -88,8 +88,6 @@ val ocamlpre :
 (** [ocamlcode s1 s2] parses [s1] and formats the result as a HTML string
   enclosed between <pre> and </pre> unless specified otherwise. *)
 
-(* $Id$ *)
-
 val ocaml_file :
   ?filename:string ->
   ?keyword_colors:(string, string option * string option * string) Hashtbl.t ->
@@ -97,7 +95,7 @@ val ocaml_file :
   Buffer.t ->
   Input.token list -> unit
 (** [ocaml_file buf tokens] makes HTML code that represents one source file
-  of OCaml code. The name of the file is added as title, 
+  of OCaml code. The name of the file is added as title,
   depending on the parameters and is specified with the [filename] option.
 *)
 
@@ -119,5 +117,5 @@ val ocaml_document :
   ?keyword_colors:(string, string option * string option * string) Hashtbl.t ->
   ?param:param -> string list -> string -> unit
 (** [ocaml_document files file] parses the given OCaml [files]
-  and make one complete HTML document that shows the contents of 
+  and make one complete HTML document that shows the contents of
   these files. *)

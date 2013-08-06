@@ -1,8 +1,8 @@
 (* $Id$ *)
-(* 
+(*
    Copyright 2002-2004 Sébastien Ailleret
    Copyright 2004, 2010 Martin Jambon
-   
+
    This file is distributed under the terms of the GNU Public License
    http://www.gnu.org/licenses/gpl.txt
 *)
@@ -79,7 +79,7 @@ let default_keyword_color_list =
     "type", (key_color1, "Ctype");
     "val", (key_color1, "Cval");
     "virtual", (key_color1, "Cvirtual");
-    
+
     "do", (key_color2, "Cdo");
     "done", (key_color2, "Cdone");
     "downto", (key_color2, "Cdownto");
@@ -96,17 +96,17 @@ let default_keyword_color_list =
     "when", (key_color2, "Cwhen");
     "while", (key_color2, "Cwhile");
     "with", (key_color2, "Cwith");
-    
+
     "assert", (key_color3, "Cassert");
     "include", (key_color3, "Cinclude");
     "open", (key_color3, "Copen");
-    
+
     "begin", (key_color4, "Cbegin");
     "end", (key_color4, "Cend");
     "object", (key_color4, "Cobject");
     "sig", (key_color4, "Csig");
     "struct", (key_color4, "Cstruct");
-    
+
     "raise", (key_color6, "Craise");
 
     "asr", (key_color5, "Casr");
@@ -116,7 +116,7 @@ let default_keyword_color_list =
     "lsr", (key_color5, "Clsr");
     "lxor", (key_color5, "Clxor");
     "mod", (key_color5, "Cmod");
-    
+
     "false", (None, "Cfalse");
     "true", (None, "Ctrue");
 
@@ -126,7 +126,7 @@ let default_keyword_color_list =
 let default_keyword_colors =
   let tbl = Hashtbl.create 100 in
   List.iter
-    (fun (s, (color, css_class)) -> 
+    (fun (s, (color, css_class)) ->
        Hashtbl.add tbl s (color, css_class))
     default_keyword_color_list;
   tbl
@@ -146,8 +146,8 @@ let make_defs
   let buf = Buffer.create 2000 in
 
   List.iter (
-    fun (fg, name) -> 
-      match fg with 
+    fun (fg, name) ->
+      match fg with
 	  None ->
             bprintf buf "\
 \\newcommand\\%s[1]{#1}
@@ -164,7 +164,7 @@ let make_defs
 
   Buffer.contents buf
 
-  
+
 let make_defs_file
     ?(colors = all_colors)
     file =
@@ -175,7 +175,7 @@ let make_defs_file
 let default_style = make_defs ()
 
 type param = {
-  line_numbers : bool; 
+  line_numbers : bool;
   title : bool;
   body_only : bool;
   tab_size : int;
@@ -184,7 +184,7 @@ type param = {
 }
 
 let default_param = {
-  line_numbers = false; 
+  line_numbers = false;
   title = false;
   body_only = false;
   tab_size = 8;
@@ -193,7 +193,7 @@ let default_param = {
 }
 
 
-let add_string buf s = 
+let add_string buf s =
   String.iter
     (function
 	 '\\' -> Buffer.add_string buf "\\(\\backslash\\)"
@@ -207,7 +207,7 @@ let line_comment p buf i =
   if p.line_numbers then
     bprintf buf "\\Clinenum{%4i}: " i
 
- 
+
 let colorize ?(comment = false) p buf style s =
   let add =
     if comment && p.latex_comments then Buffer.add_string buf
@@ -228,7 +228,7 @@ let ocaml
   ?(keyword_colors = default_keyword_colors)
   ?(param = default_param)
   buf l =
-  
+
   let _last_line =
     fold_left
       (fun line token rest ->
@@ -246,9 +246,9 @@ let ocaml
 	       colorize ~comment:true param buf comment_color s;
 	       line
 	   | `Special_comment (handler_name, s0) ->
-	       let html = 
+	       let html =
 		 match Plugin.expand handler_name s0 with
-		     None -> 
+		     None ->
 		       failwith (
 			 sprintf "Handler %s failed on line %i with input %s"
 			   handler_name line s0
@@ -261,10 +261,10 @@ let ocaml
 	       colorize param buf construct_color s;
 	       line
 	   | `Keyword k ->
-	       (try 
+	       (try
 		  let color = Hashtbl.find keyword_colors k in
 		  colorize param buf color k;
-		with Not_found -> 
+		with Not_found ->
 		  let color =
 		    match k.[0] with
 			'a' .. 'z' -> alpha_keyword_color
@@ -297,11 +297,11 @@ let esc s =
   Buffer.contents buf
 
 let ocaml_file
-  ?(filename = "") 
+  ?(filename = "")
   ?keyword_colors
   ~param
   buf l =
-  
+
   if param.title then
     bprintf buf "\\section{\\tt %s}\n" (esc filename);
 

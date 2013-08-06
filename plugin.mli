@@ -24,7 +24,7 @@ val count_newlines : string -> int
 val expand : string -> string -> string option
   (** [expand handler_name s] find the handler [handler_name]
       and apply it to the input string [s].
-      If the handler is an external command, the result is [None] 
+      If the handler is an external command, the result is [None]
       if and only if the process exits with a non-zero status.
       If the handler is a function, the behavior corresponds to
       the behavior of the function itself and any exception is propagated.

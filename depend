@@ -1,22 +1,22 @@
-hashtbl2.cmi: 
-hashtbl2.cmo: hashtbl2.cmi 
-hashtbl2.cmx: hashtbl2.cmi 
-annot.cmi: 
-annot.cmo: annot.cmi 
-annot.cmx: annot.cmi 
-tag.cmo: 
-tag.cmx: 
-plugin.cmi: 
-plugin.cmo: plugin.cmi 
-plugin.cmx: plugin.cmi 
-input.cmi: annot.cmi 
-input.cmo: tag.cmo plugin.cmi annot.cmi input.cmi 
-input.cmx: tag.cmx plugin.cmx annot.cmx input.cmi 
-output.cmi: input.cmi annot.cmi 
-output.cmo: plugin.cmi input.cmi hashtbl2.cmi annot.cmi output.cmi 
-output.cmx: plugin.cmx input.cmx hashtbl2.cmx annot.cmx output.cmi 
-output_latex.cmi: input.cmi 
-output_latex.cmo: plugin.cmi input.cmi output_latex.cmi 
-output_latex.cmx: plugin.cmx input.cmx output_latex.cmi 
-main.cmo: plugin.cmi output_latex.cmi output.cmi input.cmi 
-main.cmx: plugin.cmx output_latex.cmx output.cmx input.cmx 
+hashtbl2.cmi :
+hashtbl2.cmo : hashtbl2.cmi
+hashtbl2.cmx : hashtbl2.cmi
+annot.cmi :
+annot.cmo : annot.cmi
+annot.cmx : annot.cmi
+tag.cmo :
+tag.cmx :
+plugin.cmi :
+plugin.cmo : plugin.cmi
+plugin.cmx : plugin.cmi
+input.cmi : annot.cmi
+input.cmo : tag.cmo plugin.cmi annot.cmi input.cmi
+input.cmx : tag.cmx plugin.cmx annot.cmx input.cmi
+output.cmi : input.cmi annot.cmi
+output.cmo : plugin.cmi input.cmi hashtbl2.cmi annot.cmi output.cmi
+output.cmx : plugin.cmx input.cmx hashtbl2.cmx annot.cmx output.cmi
+output_latex.cmi : input.cmi
+output_latex.cmo : plugin.cmi input.cmi output_latex.cmi
+output_latex.cmx : plugin.cmx input.cmx output_latex.cmi
+main.cmo : plugin.cmi output_latex.cmi output.cmi input.cmi
+main.cmx : plugin.cmx output_latex.cmx output.cmx input.cmx

@@ -21,7 +21,7 @@ type t = [ `A | `b of int | ` C | ` (* *) D | `
 (*html
   <h2>Hello</h2>
   <p>
-  This is 
+  This is
   HTML!
   </p>
 *)
@@ -32,7 +32,7 @@ type t = [ `A | `b of int | ` C | ` (* *) D | `
 
 (*foo*)
 
-module Zéro'04 = 
+module Zéro'04 =
 struct
   let characters = [ 'a'; '\000'; '\x12'; '
 '; '\t'; 'z' ]

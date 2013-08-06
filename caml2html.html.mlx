@@ -14,15 +14,15 @@ open Mikmatch;;
 <center><h1>How to use Caml2html</h1></center>
 
 <p>
-More information about Caml2html 
+More information about Caml2html
 <a href="http://martin.jambon.free.fr/caml2html.html">here</a>.
 
 <h2>Usage</h2>
 
 <pre>
-##= Netencoding.Html.encode 
-      ~in_enc:`Enc_iso88591 
-      ~out_enc:`Enc_iso88591 () 
+##= Netencoding.Html.encode
+      ~in_enc:`Enc_iso88591
+      ~out_enc:`Enc_iso88591 ()
       (Text.file_contents "caml2html-help") .##
 </pre>
 
@@ -71,10 +71,10 @@ caml2html -charset euc-jp input.ml -o output.html
 </pre>
 
 <p>You can write the comments in HTML. This lets you add simple
-formatting such as hyperlinks. Beware that one HTML tag cannot 
-span over several lines, and that the characters 
+formatting such as hyperlinks. Beware that one HTML tag cannot
+span over several lines, and that the characters
 <code>&lt;</code>, <code>&gt;</code> and <code>&amp;</code>
-must be written as <code>&amp;lt;</code>, <code>&amp;gt;</code> 
+must be written as <code>&amp;lt;</code>, <code>&amp;gt;</code>
 and <code>&amp;amp;</code>.
 <pre>
 (* This is file1.ml.

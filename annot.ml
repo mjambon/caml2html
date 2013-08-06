@@ -32,7 +32,7 @@ let create_pos file line linechar char =
 
    As a consequence, we must use the (line,char) positions and not
    absolute character position.
-*)   
+*)
 let parse_type_data pos_line type_lines =
   sscanf pos_line "%S %i %i %i %S %i %i %i"
     (fun file1 line1 linechar1 char1 file2 line2 linechar2 char2 ->
@@ -70,15 +70,15 @@ let tagify ~impl_file l =
   let info0 = { innermost = false; outermost = false } in
   let length x = x.stop.pos_cnum - x.start.pos_cnum in
   let tags =
-    List.fold_left 
+    List.fold_left
       (fun l x ->
-	 if x.start.pos_fname <> impl_file || 
+	 if x.start.pos_fname <> impl_file ||
 	    x.stop.pos_fname <> impl_file then l
 	 else
 	   let len = length x in
 	   let start = x.start in
 	   let stop = x.stop in
-	   let start_key = [| start.pos_lnum; start.pos_cnum - start.pos_bol; 
+	   let start_key = [| start.pos_lnum; start.pos_cnum - start.pos_bol;
 			      1; -len |] in
 	   let stop_key = [| stop.pos_lnum; stop.pos_cnum - stop.pos_bol;
 			     -1; len |] in
@@ -88,11 +88,11 @@ let tagify ~impl_file l =
 		"Ignoring annotation: stop tag at or before start tag!\n%!";
 	      l)
 	   else
-	     (start_key, (`Start x.typ, (x.start, info0))) :: 
+	     (start_key, (`Start x.typ, (x.start, info0))) ::
 	       (stop_key, (`Stop, (x.stop, info0))) :: l) [] l in
   List.map snd (List.sort compare_tags tags)
 
-(* We keep only a sequence of non-nested annotations. 
+(* We keep only a sequence of non-nested annotations.
    That's too bad, but it would have to be implemented in javascript
    and it's not so easy to implement something reliable.
    Without nesting, CSS with hover is sufficient, even in IE (but
@@ -107,14 +107,14 @@ let rec remove_outer_tags = function
   | [(_, `Start _)] -> assert false
 
 let rec remove_inner_tags = function
-    (_, `Start _) as start :: l -> 
+    (_, `Start _) as start :: l ->
       let stop, rest = skip_tag_sequence 1 l in
       start :: stop :: remove_inner_tags rest
   | (_, `Stop) :: _ -> assert false
   | [] -> []
 and skip_tag_sequence n = function
     (_, `Start _) :: l -> skip_tag_sequence (n+1) l
-  | ((_, `Stop) as stop) :: l -> 
+  | ((_, `Stop) as stop) :: l ->
       let n = n - 1 in
       if n = 0 then stop, l
       else skip_tag_sequence n l
@@ -138,14 +138,14 @@ let rec mark_innermost = function
   | [(`Start _, _)] -> invalid_arg "Annot.mark_innermost"
 
 let rec mark_outermost = function
-    (`Start _, _) as start :: l -> 
+    (`Start _, _) as start :: l ->
       set_outermost start :: skip_tag_sequence 1 l
   | (`Stop, _) :: _ -> invalid_arg "Annot.mark_outermost"
   | [] -> []
 
 and skip_tag_sequence n = function
     ((`Start _, _) as start) :: l -> start :: skip_tag_sequence (n+1) l
-  | ((`Stop, _) as stop) :: l -> 
+  | ((`Stop, _) as stop) :: l ->
       let n = n - 1 in
       if n = 0 then set_outermost stop :: mark_outermost l
       else stop :: skip_tag_sequence n l
@@ -157,10 +157,10 @@ let set_layer_info l = mark_outermost (mark_innermost l)
 let z = { innermost = false; outermost = false };;
 let start x = (`Start x, (x, z));;
 let stop x = (`Stop, (x, z));;
-let l = 
+let l =
   [ start 1; stop 1; start 2; start 3; start 4; stop 4; stop 3; stop 2 ];;
 mark_outermost (mark_innermost l);;
-*)      
+*)
 
 
 type filter = [ `All | `Innermost | `Outermost ]
@@ -210,7 +210,7 @@ let classify_line s =
 let preparse_file annot_file =
   let ic = open_in annot_file in
   let l = ref [] in
-  try 
+  try
     while true do
       l := classify_line (input_line ic) :: !l
     done;
@@ -249,9 +249,9 @@ let parse ~impl_file ~annot_file =
 
   let rec main_loop accu l =
     match l with
-	`Loc loc_s :: l -> 
+	`Loc loc_s :: l ->
 	  let type_data, l = body_loop None l in
-	  let accu = 
+	  let accu =
 	    match type_data with
 		None -> accu
 	      | Some data_lines ->
@@ -271,7 +271,7 @@ let parse ~impl_file ~annot_file =
   set_layer_info (tagify ~impl_file l)
 
 let guess_annot_file file =
-  try 
+  try
     let name = Filename.chop_extension file ^ ".annot" in
     if Sys.file_exists name then Some name
     else None
@@ -279,6 +279,6 @@ let guess_annot_file file =
 
 (* impl_file is the file to annotate. See parse function above. *)
 let from_file ~impl_file ~annot_file : tag list option =
-  if Sys.file_exists annot_file then 
+  if Sys.file_exists annot_file then
     Some (parse ~impl_file ~annot_file)
   else None

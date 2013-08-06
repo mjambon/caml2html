@@ -1,4 +1,4 @@
-(* 
+(*
    Copyright 2004 Martin Jambon
 
    This file is distributed under the terms of the GNU Public License
@@ -24,16 +24,16 @@ type token =
   | `Quotation of string (** a camlp4 quotation *)
   | `Tab                 (** a tabulation character *)
   | `Token of string     (** anything else *)
-  | `Start_annot of (Annot.layer_info * string) (** start of a type annotation 
+  | `Start_annot of (Annot.layer_info * string) (** start of a type annotation
 						  read from .annot file *)
   | `Stop_annot of Annot.layer_info ]  (** end of a type annotation
 					 read from .annot file *)
 
 val parse :
   ?annot:Annot.tag list -> Lexing.lexbuf -> token list
-val string : 
+val string :
   ?filename:string -> ?annot:Annot.tag list -> string -> token list
-val channel : 
+val channel :
   ?filename:string -> ?annot:Annot.tag list -> in_channel -> token list
-val file : 
+val file :
   ?annot:Annot.tag list -> string -> token list

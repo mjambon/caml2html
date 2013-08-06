@@ -14,7 +14,7 @@ let exists = Hashtbl.mem plugins
 let find = Hashtbl.find plugins
 
 
-let count_newlines s = 
+let count_newlines s =
   let n = ref 0 in
   String.iter (
     function
@@ -48,11 +48,11 @@ let expand name s =
 	      Unix.WEXITED 0 -> Some (Buffer.contents buf)
 	    | _ -> None
 
-	    
+	
 let html_handler =
   `Function (fun s -> Some s)
 
-let _ = 
+let _ =
   add "html" html_handler
 
 

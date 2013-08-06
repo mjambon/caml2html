@@ -2,6 +2,6 @@
 
 - add "mkdir -p" feature instead of just "mkdir"
 
-- bug in ocaml compiler (3.09.2): -dtypes option on input.mll creates 
-  an input.annot file where character counts are higher than what they 
+- bug in ocaml compiler (3.09.2): -dtypes option on input.mll creates
+  an input.annot file where character counts are higher than what they
   should be. The number of lines is correct though.

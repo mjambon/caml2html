@@ -1,7 +1,7 @@
 Caml2html
 =========
 
-Caml2html is a command-line tool that highlights the syntax of OCaml 
+Caml2html is a command-line tool that highlights the syntax of OCaml
 source code.
 
 Requirements
@@ -44,7 +44,7 @@ $ make uninstall
 How to run it
 -------------
 
-Type `caml2html -help`, or have a look at the html documentation 
+Type `caml2html -help`, or have a look at the html documentation
 (`caml2html.html`).
 
 
@@ -52,6 +52,6 @@ Type `caml2html -help`, or have a look at the html documentation
 Authors and license
 -------------------
 
-Caml2html was originally written by 
+Caml2html was originally written by
 Sébastien Ailleret, and is now developed by Martin Jambon.
 It is distributed for free under a GPL license (see `LICENSE` file).

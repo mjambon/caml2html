@@ -1,8 +1,8 @@
 (* $Id$ *)
-(* 
+(*
    Copyright 2002-2004 Sébastien Ailleret
    Copyright 2004 Martin Jambon
-   
+
    This file is distributed under the terms of the GNU Public License
    http://www.gnu.org/licenses/gpl.txt
 *)
@@ -22,7 +22,7 @@ let version = "caml2html " ^ Version.version
 type class_definition = (string list * (string * string) list)
 
 (* This will be come before the token-specific color definitions *)
-let default_default_style : class_definition list = 
+let default_default_style : class_definition list =
   [ ["code"; "pre"], [ "color", "black";
 		       "background-color", "white" ];
     ["a.Cannot"], [ "color", "black";
@@ -69,7 +69,7 @@ let default_keyword_color_list =
     "type", (key_color1, None, "Ctype");
     "val", (key_color1, None, "Cval");
     "virtual", (key_color1, None, "Cvirtual");
-    
+
     "do", (key_color2, None, "Cdo");
     "done", (key_color2, None, "Cdone");
     "downto", (key_color2, None, "Cdownto");
@@ -86,17 +86,17 @@ let default_keyword_color_list =
     "when", (key_color2, None, "Cwhen");
     "while", (key_color2, None, "Cwhile");
     "with", (key_color2, None, "Cwith");
-    
+
     "assert", (key_color3, None, "Cassert");
     "include", (key_color3, None, "Cinclude");
     "open", (key_color3, None, "Copen");
-    
+
     "begin", (key_color4, None, "Cbegin");
     "end", (key_color4, None, "Cend");
     "object", (key_color4, None, "Cobject");
     "sig", (key_color4, None, "Csig");
     "struct", (key_color4, None, "Cstruct");
-    
+
     "raise", (Some "red", None, "Craise");
 
     "asr", (key_color5, None, "Casr");
@@ -106,7 +106,7 @@ let default_keyword_color_list =
     "lsr", (key_color5, None, "Clsr");
     "lxor", (key_color5, None, "Clxor");
     "mod", (key_color5, None, "Cmod");
-    
+
     "false", (None, None, "Cfalse");
     "true", (None, None, "Ctrue");
 
@@ -116,7 +116,7 @@ let default_keyword_color_list =
 let default_keyword_colors =
   let tbl = Hashtbl.create 100 in
   List.iter
-    (fun (s, (color, bgcolor, css_class)) -> 
+    (fun (s, (color, bgcolor, css_class)) ->
        Hashtbl.add tbl s (color, bgcolor, css_class))
     default_keyword_color_list;
   tbl
@@ -139,7 +139,7 @@ let make_style l =
 let inline_style (fg, bg, _class) =
   let colors = [] in
   let colors =
-    match fg with 
+    match fg with
 	None -> colors
       | Some color -> ("color:" ^ color) :: colors in
   let colors =
@@ -153,33 +153,33 @@ let make_classes
   ?(colors = all_colors) () =
   let buf = Buffer.create 2000 in
 
-  List.iter 
+  List.iter
     (fun (classnames, style) ->
        if classnames <> [] then
-	 bprintf buf "%s { %s }" 
+	 bprintf buf "%s { %s }"
 	   (String.concat "," classnames) (make_style style))
     default;
 
-  let color_groups = 
+  let color_groups =
     Hashtbl2.list_all (Hashtbl2.of_list 50
 			 (List.map (fun (a,b,c) -> ((a,b),c)) colors)) in
-  List.iter 
-    (fun ((fg, bg), l) -> 
+  List.iter
+    (fun ((fg, bg), l) ->
        let color =
-	 match fg with 
+	 match fg with
 	     None -> ""
 	   | Some color -> " color: " ^ color ^ ";" in
        let background_color =
 	 match bg with
 	     None -> ""
 	   | Some color -> " background-color: " ^ color ^ ";" in
-       bprintf buf ".%s {%s%s }\n" 
-	 (String.concat ",\n." (List.sort String.compare l)) 
+       bprintf buf ".%s {%s%s }\n"
+	 (String.concat ",\n." (List.sort String.compare l))
 	 color background_color)
     color_groups;
   Buffer.contents buf
-  
-let make_css 
+
+let make_css
   ?(default = default_default_style)
   ?(colors = all_colors)
   file =
@@ -191,8 +191,8 @@ let default_style = make_classes ()
 
 type style = [ `Inline | `Inhead of string | `Url of string ]
 
-type param = 
-    { line_numbers : bool; 
+type param =
+    { line_numbers : bool;
       title : bool;
       body_only : bool;
       tab_size : int;
@@ -202,12 +202,12 @@ type param =
       charset : string;
       annot_filter : Annot.filter;
       no_annot : bool;
-      ie7 : bool (* if true, type annotations will not work 
+      ie7 : bool (* if true, type annotations will not work
 		    on versions of Internet Explorer prior to IE 7
 		    (but rendering is better) *) }
 
 let default_param =
-  { line_numbers = false; 
+  { line_numbers = false;
     title = false;
     body_only = false;
     tab_size = 8;
@@ -220,7 +220,7 @@ let default_param =
     ie7 = false }
 
 
-let add_string buf nbsp s = 
+let add_string buf nbsp s =
   String.iter
     (function
 	 '<' -> Buffer.add_string buf "&lt;"
@@ -237,15 +237,15 @@ let line_comment p buf i =
 	`Inline -> (* should use color parameters *)
 	  bprintf buf
 	  "<span style=\"%s\">%4d:</span>\
-           <span style=\"%s\"> </span>" 
+           <span style=\"%s\"> </span>"
 	  (inline_style linenum_color) i (inline_style background_color)
-      | `Inhead _ 
+      | `Inhead _
       | `Url _ ->
-	  bprintf buf 
+	  bprintf buf
 	    "<span class=\"Clinenum\">%4d:</span>\
              <span class=\"Cbackground\"> </span>" i
 
- 
+
 let colorize ?(comment = false) p buf nbsp style s =
   let add =
     if comment && p.html_comments then Buffer.add_string buf
@@ -280,7 +280,7 @@ let compact_annot s =
 
 
 let ignore_annot p info =
-  p.no_annot || 
+  p.no_annot ||
   p.annot_filter = `Innermost && not info.Annot.innermost ||
   p.annot_filter = `Outermost && not info.Annot.outermost
 
@@ -294,20 +294,20 @@ let hover_stop p =
 
 let start_annot p buf info annot =
   if ignore_annot p info then ()
-  else 
-    ((* We use "a href" and not "span" 
+  else
+    ((* We use "a href" and not "span"
 	in order to make the hover work in IE 6. *)
       match p.style with
 	  `Inline ->
-	    bprintf buf 
+	    bprintf buf
 	    "<%s style=\"text-decoration:none;%s\" \
-                title=\"\"" 
+                title=\"\""
 	      (hover_start p)
 	      (inline_style annot_color);
 	    add_string buf false (compact_annot annot);
 	    Buffer.add_string buf "\">"
 	| `Inhead _ | `Url _ ->
-	    bprintf buf 
+	    bprintf buf
 	      "<%s style=\"text-decoration:none\" \
                   class=\"Cannot\" title=\""
 	      (hover_start p);
@@ -315,7 +315,7 @@ let start_annot p buf info annot =
 	    Buffer.add_string buf "\">")
 
 let stop_annot p buf info =
-  if ignore_annot p info then () 
+  if ignore_annot p info then ()
   else
     bprintf buf "</%s>" (hover_stop p)
 
@@ -330,7 +330,7 @@ let ocaml
   ?(keyword_colors = default_keyword_colors)
   ?(param = default_param)
   buf l =
-  
+
   let _last_line =
     fold_left
       (fun line token rest ->
@@ -348,9 +348,9 @@ let ocaml
 	       colorize ~comment:true param buf nbsp comment_color s;
 	       line
 	   | `Special_comment (handler_name, s0) ->
-	       let html = 
+	       let html =
 		 match Plugin.expand handler_name s0 with
-		     None -> 
+		     None ->
 		       failwith (
 			 sprintf "Handler %s failed on line %i with input %s"
 			   handler_name line s0
@@ -363,10 +363,10 @@ let ocaml
 	       colorize param buf nbsp construct_color s;
 	       line
 	   | `Keyword k ->
-	       (try 
+	       (try
 		  let color = Hashtbl.find keyword_colors k in
 		  colorize param buf nbsp color k;
-		with Not_found -> 
+		with Not_found ->
 		  let color =
 		    match k.[0] with
 			'a' .. 'z' -> alpha_keyword_color
@@ -386,7 +386,7 @@ let ocaml
 	       if param.tab_size < 0 then Buffer.add_char buf '\t'
 	       else add_string buf nbsp (String.make param.tab_size ' ');
 	       line
-	   | `Start_annot (info, annot) -> (start_annot param buf info annot; 
+	   | `Start_annot (info, annot) -> (start_annot param buf info annot;
 					    line)
 	   | `Stop_annot info -> stop_annot param buf info; line)
       2 l in
@@ -424,15 +424,15 @@ let ocamlpre
 let is_valid_anchor =
   let re = Str.regexp "[A-Za-z][-A-Za-z0-9_:.]*$" in
   fun s -> Str.string_match re s 0
-    
+
 let ocaml_file
-  ?(filename = "") 
+  ?(filename = "")
   ?keyword_colors
   ~param
   buf l =
-  
-  let anchor = 
-    if is_valid_anchor filename then 
+
+  let anchor =
+    if is_valid_anchor filename then
       sprintf "<a name=\"%s\"></a>" filename
     else "" in
 
@@ -448,7 +448,7 @@ let ocaml_file
 
 
 
-let begin_document 
+let begin_document
   ?(param = default_param)
   buf files =
   let rec make_title = function
@@ -465,12 +465,12 @@ let begin_document
 " param.charset;
   make_title files;
   Printf.bprintf buf
-    "</title>\n  <meta name=\"GENERATOR\" content=\"caml2html %s\">\n" 
+    "</title>\n  <meta name=\"GENERATOR\" content=\"caml2html %s\">\n"
     Version.version;
   (match param.style with
        `Url url ->
 	 Printf.bprintf buf
-	 "  <link rel=\"stylesheet\" href=\"%s\" type=\"text/css\">\n" 
+	 "  <link rel=\"stylesheet\" href=\"%s\" type=\"text/css\">\n"
 	url
      | `Inhead s ->
 	 Printf.bprintf buf "<style type=\"text/css\">\n%s</style>\n" s
@@ -483,7 +483,7 @@ let end_document ?(param = default_param) buf =
     Buffer.add_string buf "
 <hr>
 <p>
-<em>This document was generated using 
+<em>This document was generated using
 <a href=\"http://martin.jambon.free.fr/caml2html.html\">caml2html</a></em>
 ";
   Buffer.add_string buf "</body>\n</html>\n"
@@ -494,7 +494,7 @@ let handle_file ?keyword_colors ?(param = default_param) buf filename =
     match Annot.guess_annot_file filename with
 	None -> None
       | Some annot_file ->
-	  Annot.from_file 
+	  Annot.from_file
 	    ~impl_file:filename ~annot_file in
   let l = Input.file ?annot filename in
   ocaml_file ?keyword_colors ~param ~filename buf l

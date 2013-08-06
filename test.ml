@@ -3,7 +3,7 @@ type kind = Start | Stop | Other
 
 (* Recursively remove consecutive start/stop pairs *)
 let rec remove_matches = function
-    (Start, _) as start :: l -> 
+    (Start, _) as start :: l ->
       (match remove_matches l with
 	   (Stop, _) :: rest -> rest
 	 | rest -> start :: rest)
@@ -34,7 +34,7 @@ let start x = (Start, x);;
 let stop x = (Stop, x);;
 let other x = (Other, x);;
 let annotate b x = (x, b);;
-let l1, l2 = 
+let l1, l2 =
   [ stop 1; stop 2; start 3; start 4; start 5; stop 5; start 6 ],
   [ stop 6; start 7; stop 7; stop 4; stop 3; start 8; stop 8; start 9 ];;
 let l = remove_matches (l1 @ [other 10] @ l2);;

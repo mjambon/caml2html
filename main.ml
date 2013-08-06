@@ -1,8 +1,8 @@
 (* $Id$ *)
-(* 
+(*
    Copyright 2002-2004 Sébastien Ailleret
    Copyright 2004-2007, 2010 Martin Jambon
-   
+
    This file is distributed under the terms of the GNU Public License
    http://www.gnu.org/licenses/gpl.txt
 *)
@@ -26,7 +26,7 @@ let body_only = ref false
 
 
 let get_html_param () = {
-  Output.line_numbers = !line_numbers; 
+  Output.line_numbers = !line_numbers;
   title = !title;
   body_only = !body_only;
   tab_size = !tab_size;
@@ -40,7 +40,7 @@ let get_html_param () = {
 }
 
 let get_latex_param () = {
-  Output_latex.line_numbers = !line_numbers; 
+  Output_latex.line_numbers = !line_numbers;
   title = !title;
   body_only = !body_only;
   tab_size = !tab_size;
@@ -59,7 +59,7 @@ let res_file = ref ""
 (* output directory *)
 let res_dir = ref ""
 
-let usage = 
+let usage =
   "
 Caml2html colorizes a set of OCaml source files (.ml, .mli, .mll, .mly, ...).
 Type annotations will be shown when the mouse pointer passes over
@@ -72,9 +72,9 @@ Options:"
 
 let speclist =
   [
-   ("-annotfilter", 
+   ("-annotfilter",
     Arg.Symbol (["innermost"; "outermost"],
-		(function 
+		(function
 		     "innermost" -> annot_filter := `Innermost
 		   | "outermost" -> annot_filter := `Outermost
 		   | _ -> assert false)),
@@ -108,7 +108,7 @@ let speclist =
 
    ("-body", Arg.Set body_only,
     "
-          output only document's body, for inclusion into an 
+          output only document's body, for inclusion into an
           existing document (see also -make-css and -make-latex-defs)");
 
    ("-ln", Arg.Unit (fun () -> line_numbers := true),
@@ -134,7 +134,7 @@ let speclist =
 
    ("-noannot", Arg.Set no_annot,
     "
-          do not insert type annotations as read from .annot files 
+          do not insert type annotations as read from .annot files
           (HTML output only)");
 
    ("-notab", Arg.Unit (fun () -> tab_size := -1),
@@ -244,6 +244,6 @@ let () =
     (title := false;
      handle_stdin_to_stdout (get_param ()))
   else
-    (if !res_file <> "" && ((List.length !files) >= 2) then 
+    (if !res_file <> "" && ((List.length !files) >= 2) then
        title := true;
      (manage_files (get_param ())) (List.rev !files))

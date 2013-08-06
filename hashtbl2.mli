@@ -1,5 +1,5 @@
-(** This module provides a kind of hash tables where each key is 
-present only once in the table, as opposed to the naive usage of 
+(** This module provides a kind of hash tables where each key is
+present only once in the table, as opposed to the naive usage of
 the standard [Hashtbl] module.
 Its main purpose is to provide efficient implementation
 of functions such as [list_keys] with enhanced safety
@@ -8,8 +8,8 @@ Many functions have two variants:
 - the first one is applied only on the current bindings, like
 [iter].
 - the second one has the [_all] suffix like [iter_all]
-and is applied to the list of 
-all the values that are bound to the given key 
+and is applied to the list of
+all the values that are bound to the given key
 instead of only to the topmost value.
 This list of values
 is prebuilt, so there is no cost for building the list when
@@ -27,7 +27,7 @@ returns [[(2, ["b"]); (1, ["c"; "a"])]].
 
 type ('a, 'b) t
 (** The type of hash tables from type ['a] to type ['b].
-   This representation is suitable for clustering elements 
+   This representation is suitable for clustering elements
    according to the given keys. *)
 
 val create : int -> ('a, 'b) t
@@ -137,7 +137,7 @@ val list_all : ('a, 'b) t -> ('a * 'b list) list
    according to their key. Order is unspecified. *)
 
 val of_list : int -> ('a * 'b) list -> ('a, 'b) t
-(** [Hashtbl2.of_list n l] converts a list of bindings into 
+(** [Hashtbl2.of_list n l] converts a list of bindings into
    a hash table of initial size [n]. The ordering of the list is the order
    of introduction of the bindings in the table. *)
 
