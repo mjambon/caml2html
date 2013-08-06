@@ -1,0 +1,218 @@
+.\" groff -man -Tascii caml2html.1
+.\" ==========================================================================
+.\" ============= Synopsis ===================================================
+.\" ==========================================================================
+.TH CAML2HTML 1 "May 2013" CAML2HTML "User Manuals"
+.SH NAME
+caml2html \- pretty print OCaml in html and latex
+.SH SYNOPSIS
+.B caml2html \fR[\fIOptions...\fR] \fIfiles\fR...
+.\" ==========================================================================
+.\" ============= Description ================================================
+.\" ==========================================================================
+.SH DESCRIPTION
+.B caml2html
+pretty prints 
+.B OCaml 
+source code as html or LaTex files. The pretty printing uses
+colors and adds tool\(hytips with type annotations if the
+corresponding .annot file is present.
+.\"
+.\" ==========================================================================
+.P
+Without
+.I file
+arguments,
+.B caml2html
+reads from standard input. By default it writes to standard output.
+.\"
+.\" ==========================================================================
+.\" ================ Options =================================================
+.\" ==========================================================================
+.\"
+.SH OPTIONS
+.\" ===================== -annotfilter =======================================
+.TP
+.B "\-annotfilter {innermost|outermost}"
+choose whether innermost or outermost type annotations
+should be used (default: innermost)
+.\" ===================== -noannot  ==========================================
+.TP
+.B "\-noannot"
+do not insert type annotations as read from .annot files (HTML output only)
+.\" ===================== -ln  ===============================================
+.TP
+.B "\-ln"
+add line number at the beginning of each line
+.\" ===================== -hc  ===============================================
+.TP
+.B "\-hc"
+comments are treated as raw HTML or LaTeX code (no newlines inside of tags)
+.\" ===================== -t  ================================================
+.TP
+.B "\-t"
+add a title to the HTML page
+.\" ===================== -body  =============================================
+.TP
+.B "\-body"
+output only document's body, for inclusion into an 
+existing document (see also \-make\-css and \-make\-latex\-defs)
+.\" ===================== -nf  ===============================================
+.TP
+.B "\-nf"
+do not add footnotes to the HTML page
+.\" ===================== -inhead  ===========================================
+.TP
+.B "\-inhead"
+use default styling and place it in the <head> section
+of the document (default when applicable)
+.\" ===================== -charset <charset> =================================
+.TP
+.B "\-charset <charset>"
+specify charset to use (default: iso\-8859\-1)
+.\" ===================== -css  ==============================================
+.TP
+.B "\-css"
+use separate CSS style file
+.I style.css
+.\" ===================== -cssurl <URL> ======================================
+.TP
+.B "\-cssurl <URL>"
+use
+.I URL
+as CSS
+.\" ===================== -inline  ===========================================
+.TP
+.B "\-inline"
+use inline styling (HTML only, default fallback
+if \-inhead is not applicable)
+.\" ===================== \-ie7  ==============================================
+.TP
+.B "\-ie7"
+drop support for type annotations on Internet Explorer 6 and older
+.\" ===================== -notab  ============================================
+.TP
+.B "\-notab"
+do not replace tabs by spaces
+.\" ===================== -tab <integer> =====================================
+.TP
+.B "\-tab <integer>"
+replace tab by n spaces (default = 8)
+.\" ===================== -d <directory> =====================================
+.TP
+.B "\-d <directory>"
+generate files in directory dir, rather than in current directory
+.\" ===================== -o <filename> ======================================
+.TP
+.B "\-o <filename>"
+output file
+.\" ===================== -make-css <filename> ===============================
+.TP
+.B "\-make\-css <filename>"
+create CSS file with default color definitions and exit
+.\" ===================== -ext <NAME:CMD> ====================================
+.TP
+.B "\-ext <NAME:CMD>"
+use the given external command CMD to handle comments that start
+with 
+.I (*NAME\fR.
+.I NAME
+must be a lowercase identifier. See 
+.B EXAMPLES
+below.
+.\" ===================== -latex  ============================================
+.TP
+.B "\-latex"
+output LaTeX code instead of HTML.
+.\" ===================== -make-latex-defs <filename> ========================
+.TP
+.B "\-make\-latex\-defs <filename>"
+create a file containing the default LaTeX color definitions
+and matching highlighting commands, and exit.
+\\usepackage{alltt,color} is not included.
+.\" ===================== -v  ================================================
+.TP
+.B "\-v"
+print version number to stdout and exit
+.\" ===================== -help  Display this list of options ================
+.TP
+.B "\-help | \-\-help"
+Display options and exit.
+.\"
+.\" ==========================================================================
+.\" ================ Examples ================================================
+.\" ==========================================================================
+.\"
+.SH EXAMPLES
+.\"
+Process many files into a single file:
+.P
+.RS
+caml2html \-o result.html *.mli *.ml
+.RE
+.P
+Process many files, and create one HTML page for each file:
+.P
+.RS
+caml2html *.ml
+.RE
+.P
+You can use HTML in the comments of the source file, for
+instance, to insert hyperlinks:
+.P
+.RS
+(* This is file1.ml.
+   <a href="#file2.ml">This is a link to file2.ml</a>. *)
+.RE
+.P
+Note, that one HTML tag cannot span over several lines, and that
+the ordinary characters <, > and & must be written as &lt;, &gt; and
+&amp;.
+.\"
+.\" ==========================================================================
+.P
+.B Custom comment handlers
+To implement an include directive for comments, use 
+.P
+.RS
+caml2html \-ext "include: xargs cat" example.ml
+.RE
+.P
+Then 
+.P
+.RS
+ (*include i.html *)
+ let f x = 2 * x + 1
+.RE
+.P
+produces
+.P
+.RS
+ ... contens of i.html ...
+ let f x = 2 * x + 1
+.RE
+.P
+as result.
+.\"
+.\" ==========================================================================
+.\" ================ SEE ALSO ================================================
+.\" ==========================================================================
+.\"
+.SH SEE ALSO
+.TP
+The \fBcaml2html\fR web page,
+\fIhttp://mjambon.com/caml2html.html\fR
+.TP
+Some more examples are on
+.I /usr/share/doc/caml2html/caml2html.html
+.\"
+.\" ==========================================================================
+.\" ================ Author ==================================================
+.\" ==========================================================================
+.\"
+.SH AUTHOR
+This manual page was written by Sylvain Le Gall
+<gildor@debian.org> and Hendrik Tews <hendrik@askra.de>,
+specifically for the Debian project (and may be used by others).
+
+
