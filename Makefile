@@ -20,24 +20,30 @@ ifndef OCAMLDEP
   OCAMLDEP = ocamldep
 endif
 
+ifeq "$(shell $(OCAMLC) -config |grep os_type)" "os_type: Win32"
+EXE=caml2html.exe
+else
+EXE=caml2html
+endif
+
 MODULES = hashtbl2 version annot tag plugin input output output_latex main
 
 OBJS = $(patsubst %, %.cmo, $(MODULES))
 OBJS-NAT = $(patsubst %, %.cmx, $(MODULES))
 
 .PHONY: default
-default: caml2html test
+default: $(EXE) test
 
 ### GODI targets ###
 .PHONY: all opt install
 all: byte bytelib
-opt: caml2html optlib
+opt: $(EXE) optlib
 install:
-	install -m 0755 caml2html $(BINDIR) || \
-		install -m 0755 caml2html.byte $(BINDIR)/caml2html
+	install -m 0755 $(EXE) $(BINDIR) || \
+		install -m 0755 caml2html.byte $(BINDIR)/$(EXE)
 	test -f caml2html.cma -o -f caml2html.cmxa && $(MAKE) libinstall
 uninstall:
-	rm -f $(BINDIR)/caml2html
+	rm -f $(BINDIR)/$(EXE)
 	$(MAKE) libuninstall || true
 ### end of GODI targets ###
 
@@ -62,27 +68,27 @@ test:
 	ocamlc -i caml2html_test.ml > caml2html_test.mli
 	ocamlc -c caml2html_test.mli
 	ocamlc -c -dtypes caml2html_test.ml
-	./caml2html -o caml2html_test.html \
+	./$(EXE) -o caml2html_test.html \
 		caml2html_test.mli caml2html_test.ml caml2html_test2.ml \
 		-ln -ie7 \
 		-ext date:date \
 		-ext cat:cat \
 		-ext "rot13:tr '[a-z]' '[n-za-m]'"
-	./caml2html -o caml2html_self_test.html \
+	./$(EXE) -o caml2html_self_test.html \
 		tag.ml annot.mli annot.ml plugin.mli plugin.ml \
 		input.mli input.mll output.mli output.ml \
 		output_latex.mli output_latex.ml \
 		main.ml \
 		-ln
-	./caml2html -latex -o caml2html_self_test.tex \
+	./$(EXE) -latex -o caml2html_self_test.tex \
 		tag.ml annot.mli annot.ml plugin.mli plugin.ml \
 		input.mli input.mll output.mli output.ml \
 		output_latex.mli output_latex.ml \
 		main.ml \
 		-ln
 
-caml2html: $(OBJS-NAT)
-	$(OCAMLOPT) -o caml2html str.cmxa unix.cmxa $(OBJS-NAT)
+$(EXE): $(OBJS-NAT)
+	$(OCAMLOPT) -o $(EXE) str.cmxa unix.cmxa $(OBJS-NAT)
 
 caml2html.byte: $(OBJS)
 	$(OCAMLC) -custom -o caml2html.byte str.cma unix.cma $(OBJS)
@@ -105,7 +111,7 @@ optlib: $(OBJS-NAT) caml2html.cmi caml2html.cmx
 
 # remove everything that we don't want to include into the archive
 tidy:
-	rm -f caml2html caml2html.byte \
+	rm -f $(EXE) caml2html.byte \
 		*.cm[ixoa] *.cmxa *.a *.obj *.o *~ *.annot \
 		*.ml.html caml2html_test.html caml2html_self_test.html \
 		caml2html_self_test.tex
