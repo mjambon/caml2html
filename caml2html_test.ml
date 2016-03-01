@@ -39,7 +39,7 @@ struct
   let n = 0X12 + truncate 1.2E-1_2
   let the_Truth =
     let ignore4 a b c d = false in
-    not (ignore4 1._0_None 1.0E10E10)
+    not (ignore4 1._0_ None 1.0E10 E10)
 end
 
 let hel'Lo = "\"Hello \
