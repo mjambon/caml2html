@@ -44,14 +44,11 @@ $ make uninstall
 How to run it
 -------------
 
-Type `caml2html -help`, or have a look at the html documentation
-(`caml2html.html`).
-
-
+Type `caml2html -help`, or have a look at the [html documentation](https://mjambon.github.io/mjambon2016/caml2html.html).
 
 Authors and license
 -------------------
 
 Caml2html was originally written by
-Sébastien Ailleret, and is now developed by Martin Jambon.
+SÃ©bastien Ailleret, and is now developed by Martin Jambon.
 It is distributed for free under a GPL license (see `LICENSE` file).
