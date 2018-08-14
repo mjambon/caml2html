@@ -32,7 +32,7 @@ type t = [ `A | `b of int | ` C | ` (* *) D | `
 
 (*foo*)
 
-module Zéro'04 =
+module Zero'04 =
 struct
   let characters = [ 'a'; '\000'; '\x12'; '
 '; '\t'; 'z' ]
@@ -63,4 +63,5 @@ let b x = a (a x)
 let _ = fun x -> b (b x)
 ;;
 
-# 123 (* line directives are not parsed, sorry... *)
+#123 "file.ml"  (* line directives are not parsed, sorry... *)
+
